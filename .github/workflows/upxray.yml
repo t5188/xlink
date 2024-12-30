@@ -31,12 +31,12 @@ jobs:
         # 解压到临时目录
         unzip -o xray_android.zip -d xray_android
         # 确保目标目录存在
-        mkdir -p TTLink/binary/
+        mkdir -p xlink/binary/
         # 移动 Xray 主程序到目标目录并重命名为 xray，覆盖旧文件
-        mv -f xray_android/xray TTLink/binary/xray
+        mv -f xray_android/xray xlink/binary/xray
 
         # 查找并移动 .dat 文件到目标目录
-        find xray_android -type f -name "*.dat" -exec mv -f {} TTLink/binary/ \;
+        find xray_android -type f -name "*.dat" -exec mv -f {} xlink/binary/ \;
 
     - name: Commit and push changes
       env:
@@ -44,7 +44,7 @@ jobs:
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git add TTLink/binary/xray
-        git add TTLink/binary/*.dat  # 添加所有 .dat 文件
+        git add xlink/binary/xray
+        git add xlink/binary/*.dat  # 添加所有 .dat 文件
         git commit -m "Update Xray for Android and add .dat files"
         git push origin main  # 推送到 main 分支
