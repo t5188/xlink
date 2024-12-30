@@ -29,10 +29,11 @@ unzip -o "$ZIPFILE" 'xlink/*' -d $unzip_path >&2
 unzip -j -o "$ZIPFILE" 'xlink.sh' -d /data/adb/service.d >&2
 unzip -j -o "$ZIPFILE" 'uninstall.sh' -d $MODPATH >&2
 unzip -j -o "$ZIPFILE" "module.prop" -d $MODPATH >&2
+unzip -j -o "$ZIPFILE" "system.prop" -d $MODPATH >&2
 ui_print "- 正在设置权限"
-set_perm_recursive $MODPATH 0 0 0755 0644
-set_perm_recursive /data/adb/xlink/ 0 3005 0755 0644
-set_perm_recursive /data/adb/xlink/scripts/ 0 3005 0755 0700
+set_perm_recursive $MODPATH 0 0 0755 0755
+set_perm_recursive /data/adb/xlink/ 0 3005 0755 0755
+set_perm_recursive /data/adb/xlink/scripts/ 0 3005 0755 0755
 set_perm /data/adb/service.d/xlink.sh 0 0 0755
 set_perm $MODPATH/uninstall.sh 0 0 0755
 set_perm /data/adb/xlink/scripts/ 0 0 0755
@@ -48,17 +49,13 @@ else
   sed -i "s/name=.*/name=xlink for Magisk/g" $MODPATH/module.prop
 fi
 
-# 找到文件夹对应的最大的数字
 largest_folder=$(find /data/adb -maxdepth 1 -type d -name 'xlink[0-9]*' | sed 's/.*xlink//' | sed 's/_//g' | sort -nr | head -n 1)
 
-# 使用这个最大的数字，重新匹配回原始文件夹名
 if [ -n "$largest_folder" ]; then
   for folder in /data/adb/xlink*; do
     clean_name=$(echo "$folder" | sed 's/.*xlink//' | sed 's/_//g')
     if [ "$clean_name" = "$largest_folder" ]; then
       ui_print "- Found folder: $folder"
-
-      # 覆盖 /data/adb/xlink/confs 目录中的内容
       if [ -d "$folder/confs" ]; then
         cp -rf "$folder/confs/"* /data/adb/xlink/confs/
         ui_print "- Copied contents of $folder/confs to /data/adb/xlink/confs/"
