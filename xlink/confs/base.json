@@ -1,7 +1,7 @@
 {
   "log": {
-    "access": "/data/adb/xray_lite/logs/access.log",
-    "error": "/data/adb/xray_lite/logs/error.log",
+    "access": "/data/adb/xlink/logs/access.log",
+    "error": "/data/adb/xlink/logs/error.log",
     "loglevel": "debug",
     "dnsLog": true,
     "maskAddress": "half"
