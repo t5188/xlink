@@ -3,7 +3,7 @@ clear
 scripts=$(realpath $0)
 scripts_dir=$(dirname ${scripts})
 parent_dir=$(dirname ${scripts_dir})
-module_dir="/data/adb/modules/xlink-module"
+module_dir="/data/adb/modules/xlink"
 
 source ${scripts_dir}/xlink.service
 log Info "The process is starting, please wait"
