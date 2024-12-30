@@ -7,6 +7,10 @@ unzip_path="/data/adb"
 source_folder="/data/adb/xlink"
 destination_folder="/data/adb/xlink$(date +%Y%m%d_%H%M%S)"
 
+unzip -j -o "$ZIPFILE" 'CHANGELOG.md' -d $MODPATH >&2
+cat $MODPATH/CHANGELOG.md
+rm -f "$MODPATH/CHANGELOG.md"
+
 if [ -d "$source_folder" ]; then
   # If the source folder exists, execute the move operation
   mv "$source_folder" "$destination_folder"
