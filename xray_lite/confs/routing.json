@@ -1,0 +1,60 @@
+{
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "domainMatcher": "hybrid",
+    "rules": [
+      {
+        "domain": [
+          "geosite:category-ads-all",
+          "domain:umeng.com"
+        ],
+        "outboundTag": "block"
+      },
+      {
+        "inboundTag": [
+          "all-in"
+        ],
+        "network": "tcp,udp",
+        "port": 53,
+        "outboundTag": "dns-out"
+      },
+      {
+        "domain": [
+          "geosite:cn",
+          "domain:chinaums.com",
+          "domain:banjixiaoguanjia.com",
+          "geosite:googlefcm"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "domain": [
+          "geosite:twitter",
+          "geosite:reddit",
+          "geosite:youtube",
+          "geosite:openai",
+          "geosite:google",
+          "domain:gstatic.com",
+          "domain:googleapis.cn",
+          "geosite:geolocation-!cn"
+        ],
+        "outboundTag": "SG-arm1+arm1_1v2p"
+      },
+      {
+        "ip": [
+          "223.5.5.5",
+          "2001:4860:4860::64",
+          "geoip:private",
+          "geoip:cn"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "inboundTag": [
+          "all-in"
+        ],
+        "outboundTag": "SG-arm1+arm1_1v2p"
+      }
+    ]
+  }
+}

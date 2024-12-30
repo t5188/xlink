@@ -1,0 +1,170 @@
+{
+  "outbounds": [
+    {
+      "tag": "🐢doubleR",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "168.138.170.58",
+            "port": 443,
+            "users": [
+              {
+                "id": "6633814c-5c2a-4189-b226-81caae1fc84f",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "/split2",
+          "downloadSettings": {
+            "address": "138.2.83.107",
+            "port": 443,
+            "network": "xhttp",
+            "xhttpSettings": {
+              "path": "/split2"
+            },
+            "security": "reality",
+            "realitySettings": {
+              "fingerprint": "chrome",
+              "serverName": "icloud.cdn-apple.com",
+              "publicKey": "h2acdg2dLz1f_s8l-16xIUyEwlFTgJ5WgTVy-O5Je2M",
+              "shortId": "aaabbb111222"
+            }
+          },
+          "sockopt": {
+            "domainStrategy": "UseIPv4"
+          }
+        },
+        "security": "reality",
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "serverName": "split01.acstudycn.eu.org",
+          "publicKey": "TZpCjyS-WhWXHUVUfbsOQcIAxO6kib3ZCNIFT9ztqCc",
+          "shortId": "aaabbb111222"
+        },
+        "sockopt": {
+          "domainStrategy": "UseIPv4"
+        }
+      }
+    },
+    {
+      "tag": "🐢doubleCdn",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "icook.hk",
+            "port": 443,
+            "users": [
+              {
+                "id": "6633814c-5c2a-4189-b226-81caae1fc84f",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "host": "cdn58.acstudycn.eu.org",
+          "path": "/split2",
+          "maxUploadSize": 1000000,
+          "maxConcurrentUploads": 10,
+          "downloadSettings": {
+            "address": "icook.tw",
+            "port": 443,
+            "network": "xhttp",
+            "xhttpSettings": {
+              "host": "cdn107.acstudycn.eu.org",
+              "path": "/split2",
+              "maxUploadSize": 1000000,
+              "maxConcurrentUploads": 10
+            },
+            "security": "tls",
+            "tlsSettings": {
+              "fingerprint": "chrome",
+              "serverName": "cdn107.acstudycn.eu.org",
+              "alpn": [
+                "h2",
+                "http/1.1"
+              ]
+            },
+            "sockopt": {
+              "domainStrategy": "UseIPv4"
+            }
+          }
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "fingerprint": "chrome",
+          "serverName": "cdn58.acstudycn.eu.org",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ]
+        },
+        "sockopt": {
+          "domainStrategy": "UseIPv4"
+        }
+      }
+    },
+    {
+      "tag": "SG-arm1+arm1_1v2p",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "146.235.16.222",
+            "port": 443,
+            "users": [
+              {
+                "id": "6633814c-5c2a-4189-b226-81caae1fc84f",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "/picture",
+          "downloadSettings": {
+            "address": "213.35.97.236",
+            "port": 443,
+            "network": "xhttp",
+            "xhttpSettings": {
+              "path": "/picture"
+            },
+            "security": "reality",
+            "realitySettings": {
+              "fingerprint": "chrome",
+              "serverName": "sg236.bcraftmc.eu.org",
+              "publicKey": "wf9F8DQFcK_OVnETC6rZJFcbnqdCrQdtAdCzXcviu1g",
+              "shortId": "aaabbb111222"
+            },
+            "sockopt": {
+              "domainStrategy": "UseIPv4"
+            }
+          }
+        },
+        "security": "reality",
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "serverName": "sg222.bcraftmc.eu.org",
+          "publicKey": "wf9F8DQFcK_OVnETC6rZJFcbnqdCrQdtAdCzXcviu1g",
+          "shortId": "aaabbb111222"
+        },
+        "sockopt": {
+          "domainStrategy": "UseIPv4"
+        }
+      }
+    }
+  ]
+}

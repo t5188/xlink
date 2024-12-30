@@ -1,0 +1,59 @@
+{
+  "log": {
+    "access": "/data/adb/xray_lite/logs/access.log",
+    "error": "/data/adb/xray_lite/logs/error.log",
+    "loglevel": "debug",
+    "dnsLog": true,
+    "maskAddress": "half"
+  },
+  "inbounds": [
+    {
+      "listen": "::",
+      "port": 1536,
+      "protocol": "dokodemo-door",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "fakedns",
+          "http",
+          "tls",
+          "quic"
+        ],
+        "metadataOnly": false,
+        "routeOnly": true
+      },
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy"
+        }
+      },
+      "tag": "all-in"
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      }
+    },
+    {
+      "tag": "dns-out",
+      "protocol": "dns"
+    }
+  ]
+}
