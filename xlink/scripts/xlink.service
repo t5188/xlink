@@ -74,7 +74,7 @@ stop_tproxy() {
     description "🥴" "stopped"
     killall $(awk -F ':' 'NR==1 {print $1}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
     kill -9 $(awk -F ':' 'NR==1 {print $2}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
-    find "${parent_dir}" -type f \( -name "*.log" -o -name "*.txt" -o -name "*.list" \) -exec rm -f {} +
+    find "${parent_dir}" -type f \( -name "*.log" -o -name "*.txt" -o -name "*.list" \) ! -name "run.log" -exec rm -f {} +
   fi
   toast "Xray has stopped."
 }
@@ -244,5 +244,14 @@ description() {
   current_time=$(date "+[%m.%d %H:%M]")
   sed -i "/description/c\description=${current_time} ${symbol} ${core_name} ${version} ${network_mode} ${event}" "${prop_file}"
 }
+
+case "$1" in
+enable)
+  start_tproxy
+  ;;
+disable)
+  stop_tproxy
+  ;;
+esac
 
 # xlink.service

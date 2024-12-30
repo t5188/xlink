@@ -1,21 +1,18 @@
 #!/system/bin/sh
 scripts=$(realpath $0)
 scripts_dir=$(dirname ${scripts})
-parent_dir=$(dirname ${scripts_dir})
-
-source "${scripts_dir}/xlink.service"
 
 events=$1
 monitor_file=$3
 
-if [ "${monitor_file}" = "disable" ]; then
+if [[ "${monitor_file}" == "disable" ]]; then
   case "${events}" in
-    "d")
-      start_tproxy >/dev/null 2>&1
-      ;;
-    "n")
-      stop_tproxy >/dev/null 2>&1
-      ;;
+  "d")
+    ${scripts_dir}/xlink.service enable >/dev/null 2>&1
+    ;;
+  "n")
+    ${scripts_dir}/xlink.service disable >/dev/null 2>&1
+    ;;
   esac
 fi
 

@@ -2,30 +2,61 @@
 clear
 scripts=$(realpath $0)
 scripts_dir=$(dirname ${scripts})
-parent_dir=$(dirname ${scripts_dir})
 module_dir="/data/adb/modules/xlink"
-
+parent_dir=$(dirname ${scripts_dir})
+# source files
+source "${scripts_dir}/settings.ini"
+source "${scripts_dir}/xlink.service"
+# Determines a path that can be used for relative path references.
 cd ${scripts_dir}
-source ${scripts_dir}/xlink.service
 
-log Info "The process is starting, please wait"
-if [ ! -f "${module_dir}/disable" ]; then
-  start_tproxy # >/dev/null 2>&1
-else
-  log Warn "module is not enabled"
-fi
+proxy_service() {
+  if [[ ! -f "${module_dir}/disable" ]]; then
+    log Info "Module Enabled"
+    log Info "Start xlink"
+    ${scripts_dir}/xlink.service enable >/dev/null 2>&1
+  else
+    log Warn "Module Disabled"
+    log Info "Module Disabled" >${parent_dir}/logs/run.log
+  fi
+}
 
-start_xlink.inotify() {
-  PIDs=($(busybox pidof inotifyd))
+net_inotifyd() {
+  while [[ ! -f /data/misc/net/rt_tables ]]; do
+    sleep 3
+  done
+
+  net_dir="/data/misc/net"
+
   for PID in "${PIDs[@]}"; do
-    if grep -q "xlink.inotify" "/proc/$PID/cmdline"; then
-      kill -9 "$PID"
+    if grep -q "${scripts_dir}/net.inotify" "/proc/$PID/cmdline"; then
+      return
+    fi
+  done
+  inotifyd "${scripts_dir}/net.inotify" "${net_dir}" >/dev/null 2>&1 &
+}
+
+start_inotifyd() {
+  PIDs=($(busybox pidof inotifyd)) # Environment variables are required.
+  net_inotifyd
+  for PID in "${PIDs[@]}"; do
+    if grep -q "${scripts_dir}/xlink.inotify" "/proc/$PID/cmdline"; then
       return
     fi
   done
   inotifyd "${scripts_dir}/xlink.inotify" "${module_dir}" >/dev/null 2>&1 &
 }
 
-start_xlink.inotify
+check_network() {
+  TARGET="1.1.1.1"
+  while ! ping -c 1 -W 1 ${TARGET} >/dev/null 2>&1; do
+    sleep 3
+  done
+  log Info "网络已连接！"
+}
+
+check_network
+proxy_service
+start_inotifyd
 
 # start.sh
