@@ -1,7 +1,7 @@
-id=xray_lite-module
-name=xray_lite4magisk
+id=xlink
+name=xlink
 version=v2.0
-versionCode=202411171415
+versionCode=20241230
 author=Tony
-description=Created on 11 17, 2024.
-updateJson=https://github.com/coomsn/xray_lite4magisk_public/raw/main/update.json
+description=xray tproxy.
+updateJson=https://github.com/coomsn/xlink4magisk_public/raw/main/update.json

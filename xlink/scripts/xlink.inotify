@@ -3,7 +3,7 @@ scripts=$(realpath $0)
 scripts_dir=$(dirname ${scripts})
 parent_dir=$(dirname ${scripts_dir})
 
-source "${scripts_dir}/xray_lite.service"
+source "${scripts_dir}/xlink.service"
 
 events=$1
 monitor_file=$3
@@ -18,4 +18,5 @@ if [ "${monitor_file}" = "disable" ]; then
       ;;
   esac
 fi
-# 2024 1116
+
+# xlink.inotify
