@@ -74,7 +74,7 @@ stop_tproxy() {
     description "🥴" "stopped"
     killall $(awk -F ':' 'NR==1 {print $1}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
     kill -9 $(awk -F ':' 'NR==1 {print $2}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
-    find "${parent_dir}" -type f \( -name "*.log" -o -name "*.txt" -o -name "*.list" \) ! -name "run.log" -exec rm -f {} +
+    find "${parent_dir}" -type f \( -name "*.log" -o -name "*.txt" -o -name "*.list" \) -exec rm -f {} +
   fi
   toast "Xray has stopped."
 }
@@ -170,14 +170,14 @@ del_trp() {
 }
 
 run_add_trp() {
-  add_trp ip "${table}" "${IPV}" "${chain_name}" "${intranet[*]}" "${uids[*]}"
+  add_trp "ip" "${table}" "${IPV}" "${chain_name}" "${intranet[*]}" "${uids[*]}"
   if [ "${ip6tables_switch}" = true ]; then
     add_trp "ip -6" "$((${table} * 2))" "${IP6V}" "${chain_name}6" "${intranet6[*]}" "${uids[*]}"
   fi
 }
 
 run_del_trp() {
-  del_trp ip "${table}" "${IPV}" "${chain_name}"
+  del_trp "ip" "${table}" "${IPV}" "${chain_name}"
   if [ "${ip6tables_switch}" = true ]; then
     del_trp "ip -6" "$((${table} * 2))" "${IP6V}" "${chain_name}6"
   fi
