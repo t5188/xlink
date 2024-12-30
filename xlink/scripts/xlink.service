@@ -48,7 +48,7 @@ start_tproxy() {
     export XRAY_LOCATION_ASSET="${parent_dir}/binary"
     export XRAY_LOCATION_CONFDIR="${parent_dir}/confs"
     nohup busybox setuidgid ${xray_user}:${xray_group} ${Bin} >/dev/null 2>&1 &
-    description "✔" "is running."
+    description "🤪" "started"
   else
     log Error "Binary ${Bin} not found"
     exit 1
@@ -56,6 +56,7 @@ start_tproxy() {
   echo "${Bin##*/}:$(pidof ${Bin})" >${scripts_dir}/pid.txt
   log Info "Create a new process $(pidof ${Bin})"
   add_cron
+  toast "Xray is running."
 }
 
 stop_tproxy() {
@@ -64,13 +65,14 @@ stop_tproxy() {
     run_del_trp >/dev/null 2>&1
     del_disable_quic
     del_cron
-    description "✘" "was stopped."
+    description "🥴" "stopped"
     killall $(awk -F ':' 'NR==1 {print $1}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
     kill -9 $(awk -F ':' 'NR==1 {print $2}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
     rm ${scripts_dir}/*.list
     rm ${parent_dir}/logs/*.log
     rm ${scripts_dir}/pid.txt
   fi
+  toast "Xray has stopped."
 }
 
 add_trp() {
