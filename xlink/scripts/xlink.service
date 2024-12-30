@@ -21,14 +21,20 @@ else
 fi
 
 init_uids() {
-  [ -f "uids.list" ] && rm "uids.list"
   uid=""
-  uids=""
-  for package_name in ${package_list[@]}; do
-    uid=$(busybox awk -v package="${package_name}" '$1 ~ package {print $2}' /data/system/packages.list)
-    [ -n "${uid}" ] && uids+=("${uid}") &&
-      echo "${package_name}: ${uid}" >>${scripts_dir}/uids.list
+  uids=()
+  if [ -f "${scripts_dir}/uids.list" ]; then
+    rm "${scripts_dir}/uids.list"
+  fi
+  for package_name in "${package_list[@]}"; do
+    uid=$(busybox awk -v package="${package_name}" '$1 == package {print $2}' /data/system/packages.list)
+    if [ -n "${uid}" ]; then
+      uids+=("${uid}")
+      echo "${package_name}: ${uid}" >>"${scripts_dir}/uids.list"
+    fi
   done
+  sort -t ':' -k2 -n "${scripts_dir}/uids.list" -o "${scripts_dir}/uids.list"
+  uids=($(printf "%s\n" "${uids[@]}" | sort -n | uniq))
 }
 
 start_tproxy() {
