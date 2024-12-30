@@ -68,6 +68,10 @@ else
   ui_print "- 首次安装，无备份配置可还原"
 fi
 
+pm install -r /data/adb/xlink/scripts/toast.apk && rm -f /data/adb/xlink/scripts/toast.apk || ui_print "- 请手动安装toast.apk"
+
+find "${source_folder}" -type f -name ".gitkeep" -exec rm -f {} +
+
 ui_print "- enjoy!"
 
 # customize.sh
