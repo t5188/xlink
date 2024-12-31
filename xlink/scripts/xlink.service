@@ -44,7 +44,7 @@ start_tproxy() {
   if [ -f "${bin_xray}" ]; then
     chmod +x ${bin_xray}
     chown root:net_admin ${bin_xray}
-    chmod o+rw ${public_log_dir}
+    chmod o+rw ${public_logs_dir}
     init_uids
     chain_name="${bin_xray##*/}"
     run_add_trp
