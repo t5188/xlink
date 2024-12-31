@@ -33,8 +33,8 @@ jobs:
           # 安装编译工具（如 autogen 和 autoconf）
           sudo apt-get install -y autogen autoconf
 
-          # 生成 configure 脚本
-          ./autogen.sh
+          # 如果没有 autogen.sh，尝试使用 autoreconf 来生成 configure 脚本
+          autoreconf -i
 
           # 设置 NDK 环境变量
           export SYSROOT=$ANDROID_NDK_PATH/platforms/android-21/arch-arm
