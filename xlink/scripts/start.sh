@@ -17,7 +17,7 @@ proxy_service() {
     ${scripts_dir}/xlink.service enable >/dev/null 2>&1
   else
     log Warn "Module Disabled"
-    log Info "Module Disabled" >${parent_dir}/logs/run.log
+    log Info "Module Disabled" >${parent_dir}/log/run.log
   fi
 }
 
