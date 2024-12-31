@@ -1,0 +1,59 @@
+name: Build setcap for Android
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 步骤 1: 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 步骤 2: 设置 Android NDK 环境
+      - name: Set up Android NDK
+        run: |
+          # 安装 Android NDK
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+          unzip android-ndk-r25b-linux.zip
+          export ANDROID_NDK_PATH=$(pwd)/android-ndk-r25b
+          echo "ANDROID_NDK_PATH=$(pwd)/android-ndk-r25b" >> $GITHUB_ENV
+
+      # 步骤 3: 编译 libcap 和 setcap 工具
+      - name: Clone and Build libcap
+        run: |
+          # 克隆 libcap 仓库
+          git clone https://git.kernel.org/pub/scm/libs/libcap/libcap.git
+          cd libcap
+
+          # 设置 NDK 环境变量
+          export SYSROOT=$ANDROID_NDK_PATH/platforms/android-21/arch-arm
+          export CROSS_COMPILE=$ANDROID_NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
+
+          # 编译 setcap 工具
+          make CROSS_COMPILE=$CROSS_COMPILE setcap
+
+      # 步骤 4: 移动编译后的 setcap 文件到 xlink/binary/xray 目录
+      - name: Move setcap to xlink/binary/xray
+        run: |
+          mkdir -p xlink/binary/xray
+          mv libcap/setcap xlink/binary/xray/setcap
+
+      # 步骤 5: 设置文件权限
+      - name: Set permissions for setcap
+        run: |
+          chmod +x xlink/binary/xray/setcap
+          echo "Permissions set successfully."
+
+      # 步骤 6: 上传构建产物（可选）
+      - name: Upload setcap binary as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: setcap
+          path: xlink/binary/xray/setcap
