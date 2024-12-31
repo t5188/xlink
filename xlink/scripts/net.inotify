@@ -74,6 +74,10 @@ rm_block_loopback() {
   done
 }
 
+if pidof sing-box >/dev/null 2>&1; then
+  exit 0
+fi
+
 if [[ "$events" == "w" && ! -f "${module_dir}/disable" && "$network_mode" == "tproxy" ]]; then
   rm_block_loopback
   wait
