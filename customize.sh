@@ -60,9 +60,9 @@ if [ -n "$largest_folder" ]; then
     clean_name=$(echo "$folder" | sed 's/.*xlink//' | sed 's/_//g')
     if [ "$clean_name" = "$largest_folder" ]; then
       ui_print "- Found folder: $folder"
-      if [ -d "$folder/confs" ]; then
-        cp -rf "$folder/confs/"* /data/adb/xlink/confs/
-        ui_print "- Copied contents of $folder/confs to /data/adb/xlink/confs/"
+      if [ -d "$folder/confx" ]; then
+        cp -rf "$folder/confx/"* /data/adb/xlink/confx/
+        ui_print "- Copied contents of $folder/confx to /data/adb/xlink/confx/"
         ui_print "- 成功还原配置文件"
       fi
       break

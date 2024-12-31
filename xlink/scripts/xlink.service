@@ -49,7 +49,7 @@ start_tproxy() {
     run_add_trp
     run_disable_quic
     ulimit -SHn 1000000
-    nohup busybox setuidgid ${xray_user}:${xray_group} ${bin_xray} run -confdir ${xray_confs_dir} >/dev/null 2>&1 &
+    nohup busybox setuidgid ${xray_user}:${xray_group} ${bin_xray} run -confdir ${xray_confx_dir} >/dev/null 2>&1 &
     description "🤪" "started"
   else
     log Error "Binary ${bin_xray} not found"
