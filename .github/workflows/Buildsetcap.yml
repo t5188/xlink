@@ -23,7 +23,7 @@ jobs:
           export ANDROID_NDK_PATH=$(pwd)/android-ndk-r25b
           echo "ANDROID_NDK_PATH=$(pwd)/android-ndk-r25b" >> $GITHUB_ENV
 
-      # 步骤 3: 编译 libcap 和 setcap 工具
+      # 步骤 3: 克隆并编译 libcap 库
       - name: Clone and Build libcap
         run: |
           # 克隆 libcap 仓库
@@ -34,8 +34,12 @@ jobs:
           export SYSROOT=$ANDROID_NDK_PATH/platforms/android-21/arch-arm
           export CROSS_COMPILE=$ANDROID_NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-
 
-          # 编译 setcap 工具
-          make CROSS_COMPILE=$CROSS_COMPILE setcap
+          # 运行 configure 脚本，准备编译环境
+          ./configure --host=arm-linux-androideabi
+
+          # 编译 libcap 和 setcap 工具
+          make
+          make setcap
 
       # 步骤 4: 移动编译后的 setcap 文件到 xlink/binary/xray 目录
       - name: Move setcap to xlink/binary/xray
