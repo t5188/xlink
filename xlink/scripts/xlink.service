@@ -7,7 +7,6 @@ clear
 
 source ${scripts_dir}/settings.ini
 
-# check iptables_version
 ipt1=$(iptables --version | busybox awk '/^iptables/ {print $2}')
 ipt2="v1.6.1"
 var1=$(echo "$ipt1" | busybox sed 's/v//g; s/\.//g')
@@ -82,7 +81,7 @@ stop_tproxy() {
 add_trp() {
   ${1} rule add fwmark "${fwmark}" table ${2} pref $((${2} * 10))
   ${1} route add local default dev lo table ${2}
-  # Create custom chain
+
   ${3} -t mangle -N ${4}_EXTERNAL
   ${3} -t mangle -F ${4}_EXTERNAL
   ${3} -t mangle -N ${4}_LOCAL
@@ -90,7 +89,6 @@ add_trp() {
   ${3} -t mangle -N DIVERT
   ${3} -t mangle -F DIVERT
 
-  # Create custom chain rules
   ${3} -t mangle -A ${4}_LOCAL -p udp --dport 53 -j MARK --set-mark ${fwmark}
   ${3} -t mangle -A ${4}_LOCAL -p tcp --dport 53 -j MARK --set-mark ${fwmark}
 
