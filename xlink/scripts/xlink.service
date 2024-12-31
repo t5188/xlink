@@ -37,29 +37,27 @@ init_uids() {
 }
 
 start_tproxy() {
-  if pidof ${Bin} >/dev/null 2>&1; then
-    log Info "Close existing processes $(pidof ${Bin})"
+  if pidof ${bin_xray} >/dev/null 2>&1; then
+    log Info "Close existing processes $(pidof ${bin_xray})"
     stop_tproxy
   fi
-  if [ -f "${Bin}" ]; then
-    chmod +x ${Bin}
-    chown root:net_admin ${Bin}
+  if [ -f "${bin_xray}" ]; then
+    chmod +x ${bin_xray}
+    chown root:net_admin ${bin_xray}
+    chmod o+rw ${public_log_dir}
     init_uids
-    chain_name="${Bin##*/}"
+    chain_name="${bin_xray##*/}"
     run_add_trp
     run_disable_quic
     ulimit -SHn 1000000
-    wait
-    export XRAY_LOCATION_ASSET="${parent_dir}/binary"
-    export XRAY_LOCATION_CONFDIR="${parent_dir}/confs"
-    nohup busybox setuidgid ${xray_user}:${xray_group} ${Bin} >/dev/null 2>&1 &
+    nohup busybox setuidgid ${xray_user}:${xray_group} ${bin_xray} run -confdir ${xray_confs_dir} >/dev/null 2>&1 &
     description "🤪" "started"
   else
-    log Error "Binary ${Bin} not found"
+    log Error "Binary ${bin_xray} not found"
     exit 1
   fi
-  echo "${Bin##*/}:$(pidof ${Bin})" >${scripts_dir}/pid.txt
-  log Info "Create a new process $(pidof ${Bin})"
+  echo "${bin_xray##*/}:$(pidof ${bin_xray})" >${scripts_dir}/pid.txt
+  log Info "Create a new process $(pidof ${bin_xray})"
   add_cron
   toast "Xray is running."
 }
@@ -228,8 +226,8 @@ del_disable_quic() {
 }
 
 version() {
-  if [ -f "${Bin}" ]; then
-    version=$(${Bin} version | head -n 1 | awk '{print $2}')
+  if [ -f "${bin_xray}" ]; then
+    version=$(${bin_xray} version | head -n 1 | awk '{print $2}')
   fi
 }
 
