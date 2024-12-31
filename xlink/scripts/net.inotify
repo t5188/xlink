@@ -21,7 +21,7 @@ else
   IP6V="ip6tables"
 fi
 
-localip="LOCAL_IP_V"
+block_name="BLOCK_LOOPBACK"
 
 block_loopback() {
   local iptables=${1}
@@ -59,31 +59,27 @@ block_loopback() {
 }
 
 run_block_loopback() {
-  block_loopback "${IPV}" "-I" "${localip}4" "-4" "${chain_name}"
-  block_loopback "${IP6V}" "-I" "${localip}6" "-6" "${chain_name}6"
+  block_loopback "${IPV}" "-I" "${block_name}4" "-4" "${chain_name}4"
+  block_loopback "${IP6V}" "-I" "${block_name}6" "-6" "${chain_name}6"
 }
 
 rm_block_loopback() {
-  while true; do
-    if iptables -t mangle -L -v -n | grep -q "${localip}4" &>/dev/null; then
-      block_loopback "${IPV}" "-D" "${localip}4" "-4"
-      sleep 1
-    else
-      break
-    fi
+  # 删除 IPv4 规则
+  until ! iptables -t mangle -L -v -n | grep -q "${block_name}4"; do
+    block_loopback "${IPV}" "-D" "${block_name}4" "-4" "${chain_name}4"
+    sleep 1
   done
-  while true; do
-    if ip6tables -t mangle -L -v -n | grep -q "${localip}6" &>/dev/null; then
-      block_loopback "${IP6V}" "-D" "${localip}6" "-6"
-      sleep 1
-    else
-      break
-    fi
+
+  # 删除 IPv6 规则
+  until ! ip6tables -t mangle -L -v -n | grep -q "${block_name}6"; do
+    block_loopback "${IP6V}" "-D" "${block_name}6" "-6" "${chain_name}6"
+    sleep 1
   done
 }
 
 if [[ "$events" == "w" && ! -f "${module_dir}/disable" && "$network_mode" == "tproxy" ]]; then
   rm_block_loopback
+  wait
   run_block_loopback
 else
   rm_block_loopback

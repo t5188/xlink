@@ -1,1 +1,8 @@
-iptables -t mangle -L LOCAL_IP_V4 -n -v
+clear
+iptables -t mangle -L BLOCK_LOOPBACK4 -n -v
+echo ""
+echo ""
+ip6tables -t mangle -L BLOCK_LOOPBACK6 -n -v
+echo ""
+echo ""
+
