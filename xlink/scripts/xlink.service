@@ -59,6 +59,7 @@ start_tproxy() {
   log Info "Create a new process $(pidof ${bin_xray})"
   add_cron
   toast "Xray is running."
+  log Info "Xray  process ($(pidof ${bin_xray})) started." >"${parent_dir}/log/run.log"
 }
 
 stop_tproxy() {
@@ -72,6 +73,7 @@ stop_tproxy() {
     find "${parent_dir}" -type f \( -name "*.log" -o -name "*.txt" -o -name "*.list" \) -exec rm -f {} +
   fi
   toast "Xray has stopped."
+  log Info "Xray has stopped." >"${parent_dir}/log/run.log"
 }
 
 add_trp() {
