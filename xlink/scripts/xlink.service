@@ -165,16 +165,12 @@ del_trp() {
 
 run_add_trp() {
   add_trp "ip" "${table}" "${IPV}" "${chain_name}4" "${intranet[*]}" "${uids[*]}"
-  if [ "${ip6tables_switch}" = true ]; then
-    add_trp "ip -6" "$((${table} * 2))" "${IP6V}" "${chain_name}6" "${intranet6[*]}" "${uids[*]}"
-  fi
+  add_trp "ip -6" "$((${table} * 2))" "${IP6V}" "${chain_name}6" "${intranet6[*]}" "${uids[*]}"
 }
 
 run_del_trp() {
   del_trp "ip" "${table}" "${IPV}" "${chain_name}4"
-  if [ "${ip6tables_switch}" = true ]; then
-    del_trp "ip -6" "$((${table} * 2))" "${IP6V}" "${chain_name}6"
-  fi
+  del_trp "ip -6" "$((${table} * 2))" "${IP6V}" "${chain_name}6"
 }
 
 add_cron() {
@@ -208,18 +204,14 @@ disable_quic() {
 run_disable_quic() {
   if [ "${quic}" = "disable" ]; then
     disable_quic "${IPV}" "-I"
-    if [ "${ip6tables_switch}" = true ]; then
-      disable_quic "${IP6V}" "-I"
-    fi
+    disable_quic "${IP6V}" "-I"
   fi
 }
 
 del_disable_quic() {
   if [ "${quic}" = "disable" ]; then
     disable_quic "${IPV}" "-D"
-    if [ "${ip6tables_switch}" = true ]; then
-      disable_quic "${IP6V}" "-D"
-    fi
+    disable_quic "${IP6V}" "-D"
   fi
 }
 
