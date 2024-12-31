@@ -46,7 +46,6 @@ start_tproxy() {
     chown root:net_admin ${bin_xray}
     chmod o+rw ${public_logs_dir}
     init_uids
-    chain_name="${bin_xray##*/}"
     run_add_trp
     run_disable_quic
     ulimit -SHn 1000000
@@ -64,7 +63,6 @@ start_tproxy() {
 
 stop_tproxy() {
   if [ -f "${scripts_dir}/pid.txt" ]; then
-    chain_name=$(awk -F ':' 'NR==1 {print $1}' ${scripts_dir}/pid.txt)
     run_del_trp >/dev/null 2>&1
     del_disable_quic
     del_cron

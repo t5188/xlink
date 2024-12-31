@@ -21,7 +21,7 @@ else
   IP6V="ip6tables"
 fi
 
-chain_name="BLOCK_LOOPBACK"
+localip="LOCAL_IP_V"
 
 block_loopback() {
   local iptables=${1}
@@ -58,22 +58,22 @@ block_loopback() {
 }
 
 run_block_loopback() {
-  block_loopback "${IPV}" "-I" "${chain_name}" "-4"
-  block_loopback "${IP6V}" "-I" "${chain_name}6" "-6"
+  block_loopback "${IPV}" "-I" "${localip}4" "-4"
+  block_loopback "${IP6V}" "-I" "${localip}6" "-6"
 }
 
 rm_block_loopback() {
   while true; do
-    if iptables -t mangle -L -v -n | grep -q "${chain_name}" &>/dev/null; then
-      block_loopback "${IPV}" "-D" "${chain_name}" "-4"
+    if iptables -t mangle -L -v -n | grep -q "${localip}4" &>/dev/null; then
+      block_loopback "${IPV}" "-D" "${localip}4" "-4"
       sleep 1
     else
       break
     fi
   done
   while true; do
-    if ip6tables -t mangle -L -v -n | grep -q "${chain_name}" &>/dev/null; then
-      block_loopback "${IP6V}" "-D" "${chain_name}6" "-6"
+    if ip6tables -t mangle -L -v -n | grep -q "${localip}4" &>/dev/null; then
+      block_loopback "${IP6V}" "-D" "${localip}6" "-6"
       sleep 1
     else
       break
