@@ -14,13 +14,11 @@
       "sniffing": {
         "enabled": true,
         "destOverride": [
-          "fakedns",
           "http",
           "tls",
           "quic"
         ],
-        "metadataOnly": false,
-        "routeOnly": true
+        "routeOnly": false
       },
       "settings": {
         "network": "tcp,udp",
@@ -31,29 +29,7 @@
           "tproxy": "tproxy"
         }
       },
-      "tag": "all-in"
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "direct",
-      "protocol": "freedom",
-      "settings": {
-        "domainStrategy": "UseIP"
-      }
-    },
-    {
-      "tag": "block",
-      "protocol": "blackhole",
-      "settings": {
-        "response": {
-          "type": "http"
-        }
-      }
-    },
-    {
-      "tag": "dns-out",
-      "protocol": "dns"
+      "tag": "trp-in"
     }
   ]
 }

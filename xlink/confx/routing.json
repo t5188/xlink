@@ -1,59 +1,95 @@
 {
   "routing": {
     "domainStrategy": "IPIfNonMatch",
-    "domainMatcher": "hybrid",
     "rules": [
       {
-        "domain": [
-          "geosite:category-ads-all",
-          "domain:umeng.com"
-        ],
-        "outboundTag": "block"
-      },
-      {
         "inboundTag": [
-          "all-in"
+          "trp-in"
         ],
         "network": "tcp,udp",
         "port": 53,
         "outboundTag": "dns-out"
       },
       {
-        "domain": [
-          "geosite:cn",
-          "domain:chinaums.com",
-          "domain:banjixiaoguanjia.com",
-          "geosite:googlefcm"
+        "ip": [
+          "1.1.1.1",
+          "1.0.0.1",
+          "2606:4700:4700::1111",
+          "2606:4700:4700::1001"
         ],
-        "outboundTag": "direct"
-      },
-      {
-        "domain": [
-          "geosite:twitter",
-          "geosite:reddit",
-          "geosite:youtube",
-          "geosite:openai",
-          "geosite:google",
-          "domain:gstatic.com",
-          "domain:googleapis.cn",
-          "geosite:geolocation-!cn"
-        ],
-        "outboundTag": "SG-arm1+arm1_1v2p"
+        "outboundTag": "SG-arm1+arm1_1v2p",
+        "type": "field"
       },
       {
         "ip": [
           "223.5.5.5",
-          "2001:4860:4860::64",
-          "geoip:private",
-          "geoip:cn"
+          "223.6.6.6",
+          "2400:3200::1",
+          "2400:3200:baba::1"
         ],
-        "outboundTag": "direct"
+        "outboundTag": "direct",
+        "type": "field"
       },
       {
-        "inboundTag": [
-          "all-in"
+        "domain": [
+          "domain:googleapis.cn",
+          "domain:gstatic.com"
         ],
-        "outboundTag": "SG-arm1+arm1_1v2p"
+        "outboundTag": "SG-arm1+arm1_1v2p",
+        "type": "field"
+      },
+      {
+        "network": "udp",
+        "outboundTag": "block",
+        "port": "443",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "geosite:category-ads-all"
+        ],
+        "outboundTag": "block",
+        "type": "field"
+      },
+      {
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "geosite:private"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "domain:alidns.com"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "ip": [
+          "geoip:cn"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "geosite:cn"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "outboundTag": "SG-arm1+arm1_1v2p",
+        "port": "0-65535",
+        "type": "field"
       }
     ]
   }
