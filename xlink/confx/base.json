@@ -9,11 +9,12 @@
   "inbounds": [
     {
       "listen": "::",
-      "port": 1536,
+      "port": 1538,
       "protocol": "dokodemo-door",
       "sniffing": {
         "enabled": true,
         "destOverride": [
+          "fakedns",
           "http",
           "tls",
           "quic"

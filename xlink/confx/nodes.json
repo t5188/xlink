@@ -36,7 +36,7 @@
               "shortId": "aaabbb111222"
             },
             "sockopt": {
-              "domainStrategy": "UseIPv4"
+              "domainStrategy": "UseIP"
             }
           }
         },
@@ -48,7 +48,7 @@
           "shortId": "aaabbb111222"
         },
         "sockopt": {
-          "domainStrategy": "UseIPv4"
+          "domainStrategy": "UseIP"
         }
       }
     },
