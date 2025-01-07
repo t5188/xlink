@@ -14,11 +14,11 @@ var1=$(echo "$ipt1" | busybox sed 's/v//g; s/\.//g')
 var2=$(echo "$ipt2" | busybox sed 's/v//g; s/\.//g')
 
 if [ "$var1" -ge "$var2" ]; then
-  IPV="iptables -w 100"
-  IP6V="ip6tables -w 100"
+  IPV4="iptables -w 100"
+  IPV6="ip6tables -w 100"
 else
-  IPV="iptables"
-  IP6V="ip6tables"
+  IPV4="iptables"
+  IPV6="ip6tables"
 fi
 
 block_name="BLOCK_LOOPBACK"
@@ -59,17 +59,17 @@ block_loopback() {
 }
 
 run_block_loopback() {
-  block_loopback "${IPV}" "-I" "${block_name}4" "-4" "${chain_name}4"
-  block_loopback "${IP6V}" "-I" "${block_name}6" "-6" "${chain_name}6"
+  block_loopback "${IPV4}" "-I" "${block_name}4" "-4" "${chain_name}4"
+  block_loopback "${IPV6}" "-I" "${block_name}6" "-6" "${chain_name}6"
 }
 
 rm_block_loopback() {
   until ! iptables -t mangle -L -v -n | grep -q "${block_name}4"; do
-    block_loopback "${IPV}" "-D" "${block_name}4" "-4" "${chain_name}4"
+    block_loopback "${IPV4}" "-D" "${block_name}4" "-4" "${chain_name}4"
     sleep 1
   done
   until ! ip6tables -t mangle -L -v -n | grep -q "${block_name}6"; do
-    block_loopback "${IP6V}" "-D" "${block_name}6" "-6" "${chain_name}6"
+    block_loopback "${IPV6}" "-D" "${block_name}6" "-6" "${chain_name}6"
     sleep 1
   done
 }
