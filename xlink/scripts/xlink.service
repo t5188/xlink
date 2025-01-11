@@ -25,13 +25,13 @@ init_uids() {
 }
 
 init_inbounds() {
-  for file in ${parent_dir}/confx/*.json; do
+  for file in $(find "${parent_dir}/confx" -type f -name "*.json" -not -name "api.json"); do
     if awk '/"inbounds"/ {found=1; exit} END {exit !found}' "$file"; then
       inbounds_file="${parent_dir}/confx/$(basename "$file")"
       break
     fi
   done
-  $yq -i --output-format=json '.inbounds = [{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["fakedns","http","tls","quic"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}]' "${inbounds_file}"
+  $yq -i --output-format=json '.inbounds = [{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["fakedns","http","tls","quic"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"},{"tag":"in-1082","port":1082,"listen":"127.0.0.1","protocol":"socks","settings":{"auth":"noauth","udp":true}}]' "${inbounds_file}"
   tp_port=$($yq eval '.inbounds[0].port' "${inbounds_file}")
 }
 
