@@ -31,7 +31,7 @@ init_inbounds() {
       break
     fi
   done
-  $yq -i --output-format=json '.inbounds = [{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["fakedns","http","tls","quic"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"},{"tag":"in-1080","port":1082,"listen":"127.0.0.1","protocol":"socks","settings":{"auth":"noauth","udp":true}}]' "${inbounds_file}"
+  $yq -i --output-format=json '.inbounds = [{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["fakedns","http","tls","quic"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"},{"tag":"in-10808","port":10808,"listen":"127.0.0.1","protocol":"socks","settings":{"auth":"noauth","udp":true}}]' "${inbounds_file}"
   tp_port=$($yq eval '.inbounds[0].port' "${inbounds_file}")
 }
 
