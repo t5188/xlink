@@ -59,7 +59,7 @@ start_tproxy() {
   log Info "Create a new process $(pidof ${bin_xray})"
   add_cron
   toast "Xray is running."
-  log Info "Xray  process ($(pidof ${bin_xray})) started." >"${parent_dir}/log/run.log"
+  log Info "Xray process ($(pidof ${bin_xray})) started." >"${parent_dir}/log/run.log"
 }
 
 stop_tproxy() {
