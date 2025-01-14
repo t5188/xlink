@@ -20,8 +20,7 @@ jobs:
     - name: Get yq version from source repository
       id: get_version
       run: |
-        cd yq
-        VERSION=$(git describe --tags --abbrev=0)  # 获取最新的版本号
+        VERSION=$(curl -s https://api.github.com/repos/mikefarah/yq/releases/latest | jq -r '.tag_name')
         echo "YQ_VERSION=$VERSION" >> $GITHUB_ENV  # 存入全局变量
 
     - name: Set up Go environment
