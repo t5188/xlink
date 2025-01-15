@@ -1,4 +1,4 @@
-name: Build xray
+name: Build xray module
 
 on:
   workflow_dispatch:
