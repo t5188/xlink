@@ -32,7 +32,6 @@ ui_print "- 正在释放文件"
 unzip -o "$ZIPFILE" 'xlink/*' -d $unzip_path >&2
 unzip -j -o "$ZIPFILE" 'xlink.sh' -d /data/adb/service.d >&2
 unzip -j -o "$ZIPFILE" 'uninstall.sh' -d $MODPATH >&2
-unzip -j -o "$ZIPFILE" "action.sh" -d $MODPATH >&2
 unzip -j -o "$ZIPFILE" "module.prop" -d $MODPATH >&2
 unzip -j -o "$ZIPFILE" "system.prop" -d $MODPATH >&2
 ui_print "- 正在设置权限"
@@ -42,7 +41,6 @@ set_perm_recursive /data/adb/xlink/scripts/ 0 3005 0755 0755
 set_perm /data/adb/service.d/xlink.sh 0 0 0755
 set_perm $MODPATH/uninstall.sh 0 0 0755
 set_perm /data/adb/xlink/scripts/ 0 0 0755
-set_perm $MODPATH/action.sh 0 0 0755
 ui_print "- 完成权限设置"
 ui_print "- 还原配置文件"
 
