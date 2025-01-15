@@ -1,0 +1,52 @@
+{
+  "outbounds": [
+    {
+      "tag": "sg2in1",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "168.138.170.58",
+            "port": 443,
+            "users": [
+              {
+                "id": "6633814c-5c2a-4189-b226-81caae1fc84f",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "mode": "packet-up",
+          "path": "/split2",
+          "downloadSettings": {
+            "address": "138.2.83.107",
+            "port": 443,
+            "network": "xhttp",
+            "xhttpSettings": {
+              "mode": "packet-up",
+              "path": "/split2"
+            },
+            "security": "reality",
+            "realitySettings": {
+              "fingerprint": "chrome",
+              "serverName": "icloud.cdn-apple.com",
+              "publicKey": "h2acdg2dLz1f_s8l-16xIUyEwlFTgJ5WgTVy-O5Je2M",
+              "shortId": "aaabbb111222"
+            }
+          }
+        },
+        "security": "reality",
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "serverName": "split01.acstudycn.eu.org",
+          "publicKey": "TZpCjyS-WhWXHUVUfbsOQcIAxO6kib3ZCNIFT9ztqCc",
+          "shortId": "aaabbb111222"
+        }
+      }
+    }
+  ]
+}

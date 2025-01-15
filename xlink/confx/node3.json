@@ -1,0 +1,76 @@
+{
+  "outbounds": [
+    {
+      "tag": "SG-arm1+arm1_1v2p",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "146.235.16.222",
+            "port": 443,
+            "users": [
+              {
+                "id": "6633814c-5c2a-4189-b226-81caae1fc84f",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "/picture",
+          "downloadSettings": {
+            "address": "213.35.97.236",
+            "port": 443,
+            "network": "xhttp",
+            "xhttpSettings": {
+              "path": "/picture"
+            },
+            "security": "reality",
+            "realitySettings": {
+              "fingerprint": "chrome",
+              "serverName": "sg236.bcraftmc.eu.org",
+              "publicKey": "wf9F8DQFcK_OVnETC6rZJFcbnqdCrQdtAdCzXcviu1g",
+              "shortId": "aaabbb111222"
+            },
+            "sockopt": {
+              "domainStrategy": "UseIP"
+            }
+          }
+        },
+        "security": "reality",
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "serverName": "sg222.bcraftmc.eu.org",
+          "publicKey": "wf9F8DQFcK_OVnETC6rZJFcbnqdCrQdtAdCzXcviu1g",
+          "shortId": "aaabbb111222"
+        },
+        "sockopt": {
+          "domainStrategy": "UseIP"
+        }
+      }
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "tag": "block"
+    },
+    {
+      "protocol": "dns",
+      "tag": "dns-out"
+    }
+  ]
+}

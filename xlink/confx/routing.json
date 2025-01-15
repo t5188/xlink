@@ -11,65 +11,79 @@
         "outboundTag": "dns-out"
       },
       {
+        "inboundTag": [
+          "socks-in"
+        ],
+        "outboundTag": "sg2in1"
+      },
+      {
+        "ip": [
+          "1.1.1.1"
+        ],
+        "port": 53,
+        "outboundTag": "sg2in1"
+      },
+      {
+        "ip": [
+          "223.5.5.5",
+          "223.6.6.6",
+          "2400:3200::1",
+          "2400:3200:baba::1"
+        ],
+        "outboundTag": "direct"
+      },
+      {
         "domain": [
           "domain:googleapis.cn",
-          "domain:gstatic.com"
+          "domain:gstatic.com",
+          "geosite:youtube"
         ],
-        "outboundTag": "SG-arm1+arm1_1v2p",
-        "type": "field"
+        "outboundTag": "sg3in1"
       },
       {
         "network": "udp",
         "outboundTag": "block",
-        "port": "443",
-        "type": "field"
+        "port": "443"
       },
       {
         "domain": [
           "geosite:category-ads-all"
         ],
-        "outboundTag": "block",
-        "type": "field"
+        "outboundTag": "block"
       },
       {
         "ip": [
           "geoip:private"
         ],
-        "outboundTag": "direct",
-        "type": "field"
+        "outboundTag": "direct"
       },
       {
         "domain": [
           "geosite:private"
         ],
-        "outboundTag": "direct",
-        "type": "field"
+        "outboundTag": "direct"
       },
       {
         "domain": [
           "domain:alidns.com"
         ],
-        "outboundTag": "direct",
-        "type": "field"
+        "outboundTag": "direct"
       },
       {
         "ip": [
           "geoip:cn"
         ],
-        "outboundTag": "direct",
-        "type": "field"
+        "outboundTag": "direct"
       },
       {
         "domain": [
           "geosite:cn"
         ],
-        "outboundTag": "direct",
-        "type": "field"
+        "outboundTag": "direct"
       },
       {
-        "outboundTag": "SG-arm1+arm1_1v2p",
-        "port": "0-65535",
-        "type": "field"
+        "outboundTag": "sg3in1",
+        "port": "0-65535"
       }
     ]
   }
