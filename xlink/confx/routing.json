@@ -1,28 +1,15 @@
 {
   "routing": {
     "domainStrategy": "IPIfNonMatch",
+    "domainMatcher": "mph",
     "rules": [
       {
+        "type": "field",
+        "port": 53,
         "inboundTag": [
           "trp-in"
         ],
-        "network": "tcp,udp",
-        "port": 53,
         "outboundTag": "dns-out"
-      },
-      {
-        "ip": [
-          "1.1.1.1"
-        ],
-        "port": "53,443",
-        "outboundTag": "sg2in1"
-      },
-      {
-        "ip": [
-          "223.5.5.5"
-        ],
-        "port": "53,443",
-        "outboundTag": "direct"
       },
       {
         "inboundTag": [
@@ -31,56 +18,46 @@
         "outboundTag": "sg2in1"
       },
       {
-        "domain": [
-          "domain:googleapis.cn",
-          "domain:gstatic.com"
-        ],
-        "outboundTag": "sg3in1"
+        "type": "field",
+        "outboundTag": "direct",
+        "protocol": [
+          "bittorrent"
+        ]
       },
       {
-        "network": "udp",
-        "outboundTag": "block",
-        "port": "443"
-      },
-      {
-        "domain": [
+        "domains": [
           "geosite:category-ads-all"
         ],
-        "outboundTag": "block"
+        "outboundTag": "block",
+        "type": "field"
+      },
+      {
+        "domains": [
+          "geosite:geolocation-!cn"
+        ],
+        "outboundTag": "sg3in1",
+        "type": "field"
       },
       {
         "ip": [
+          "geoip:cn",
           "geoip:private"
         ],
-        "outboundTag": "direct"
+        "outboundTag": "direct",
+        "type": "field"
       },
       {
-        "domain": [
+        "domains": [
+          "geosite:cn",
           "geosite:private"
         ],
-        "outboundTag": "direct"
+        "outboundTag": "direct",
+        "type": "field"
       },
       {
-        "domain": [
-          "domain:alidns.com"
-        ],
-        "outboundTag": "direct"
-      },
-      {
-        "ip": [
-          "geoip:cn"
-        ],
-        "outboundTag": "direct"
-      },
-      {
-        "domain": [
-          "geosite:cn"
-        ],
-        "outboundTag": "direct"
-      },
-      {
+        "network": "tcp,udp",
         "outboundTag": "sg3in1",
-        "port": "0-65535"
+        "type": "field"
       }
     ]
   }

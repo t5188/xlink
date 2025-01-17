@@ -56,17 +56,20 @@
       "tag": "direct"
     },
     {
+      "tag": "block",
       "protocol": "blackhole",
       "settings": {
         "response": {
           "type": "http"
         }
-      },
-      "tag": "block"
+      }
     },
     {
+      "tag": "dns-out",
       "protocol": "dns",
-      "tag": "dns-out"
+      "settings": {
+        "address": "8.8.8.8"
+      }
     }
   ]
 }
