@@ -14,10 +14,8 @@
       "sniffing": {
         "enabled": true,
         "destOverride": [
-          "fakedns",
           "http",
-          "tls",
-          "quic"
+          "tls"
         ],
         "routeOnly": false
       },
@@ -41,14 +39,38 @@
         "enabled": true,
         "destOverride": [
           "http",
-          "tls",
-          "fakedns"
+          "tls"
         ],
         "routeOnly": false
       },
       "settings": {
         "auth": "noauth",
         "udp": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "tag": "direct"
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      }
+    },
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "settings": {
+        "address": "8.8.8.8"
       }
     }
   ]

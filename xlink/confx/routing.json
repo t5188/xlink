@@ -15,7 +15,7 @@
         "inboundTag": [
           "socks-in"
         ],
-        "outboundTag": "sg2in1"
+        "outboundTag": "sg3in1"
       },
       {
         "type": "field",
@@ -55,7 +55,7 @@
         "type": "field"
       },
       {
-        "network": "tcp,udp",
+        "port": "0-65535",
         "outboundTag": "sg3in1",
         "type": "field"
       }
