@@ -29,24 +29,6 @@
         }
       },
       "tag": "trp-in"
-    },
-    {
-      "tag": "socks-in",
-      "port": 10808,
-      "listen": "127.0.0.1",
-      "protocol": "socks",
-      "sniffing": {
-        "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ],
-        "routeOnly": false
-      },
-      "settings": {
-        "auth": "noauth",
-        "udp": true
-      }
     }
   ],
   "outbounds": [
