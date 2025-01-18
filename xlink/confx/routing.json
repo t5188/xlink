@@ -12,12 +12,6 @@
         "outboundTag": "dns-out"
       },
       {
-        "inboundTag": [
-          "socks-in"
-        ],
-        "outboundTag": "sg3in1"
-      },
-      {
         "type": "field",
         "outboundTag": "direct",
         "protocol": [
