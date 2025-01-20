@@ -167,12 +167,14 @@ del_trp() {
 
 run_add_trp() {
   add_trp "ip -4" "${table}" "${IPV4}" "${chain_name}4" "${intranet4[*]}" "${uids[*]}"
-  [[ "ip6tables" == "true" ]] && add_trp "ip -6" "${table}" "${IPV6}" "${chain_name}6" "${intranet6[*]}" "${uids[*]}"
+  [[ "${ip6tables}" == "false" ]] && return
+  add_trp "ip -6" "${table}" "${IPV6}" "${chain_name}6" "${intranet6[*]}" "${uids[*]}"
 }
 
 run_del_trp() {
   del_trp "ip -4" "${table}" "${IPV4}" "${chain_name}4"
-  [[ "ip6tables" == "true" ]] && del_trp "ip -6" "${table}" "${IPV6}" "${chain_name}6"
+  [[ "${ip6tables}" == "false" ]] && return
+  del_trp "ip -6" "${table}" "${IPV6}" "${chain_name}6"
 }
 
 add_cron() {
@@ -206,14 +208,16 @@ disable_quic() {
 run_disable_quic() {
   if [ "${quic}" = "disable" ]; then
     disable_quic "${IPV4}" "-I"
-    [[ "ip6tables" == "true" ]] && disable_quic "${IPV6}" "-I"
+    [[ "${ip6tables}" == "false" ]] && return
+    disable_quic "${IPV6}" "-I"
   fi
 }
 
 del_disable_quic() {
   if [ "${quic}" = "disable" ]; then
     disable_quic "${IPV4}" "-D"
-    [[ "ip6tables" == "true" ]] && disable_quic "${IPV6}" "-D"
+    [[ "${ip6tables}" == "false" ]] && return
+    disable_quic "${IPV6}" "-D"
   fi
 }
 
