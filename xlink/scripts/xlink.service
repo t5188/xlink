@@ -198,8 +198,6 @@ del_cron() {
   fi
 }
 
-quic="disable"
-
 disable_quic() {
   ${1} ${2} OUTPUT -p udp --dport 443 -m owner ! --uid-owner ${xray_user} ! --gid-owner ${xray_group} -j REJECT
   ${1} ${2} OUTPUT -p udp --dport 80 -m owner ! --uid-owner ${xray_user} ! --gid-owner ${xray_group} -j REJECT
