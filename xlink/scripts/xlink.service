@@ -51,12 +51,12 @@ init_dns() {
   if [ -f "${dns_file}" ]; then
     $yq -i --output-format=json '.dns = {"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}' "${dns_file}"
     [[ "${ip6tables}" == "disable" ]] && return
-    $yq -i --output-format=json '.dns = {"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIP"}' "${dns_file}"
+    $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${dns_file}"
   else
     touch "${parent_dir}/confx/dns.json"
     $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}}' "${parent_dir}/confx/dns.json"
     [[ "${ip6tables}" == "disable" ]] && return
-    $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIP"}}' "${parent_dir}/confx/dns.json"
+    $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${parent_dir}/confx/dns.json"
   fi
 }
 
