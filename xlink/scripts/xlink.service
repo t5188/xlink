@@ -31,8 +31,14 @@ init_inbounds() {
       break
     fi
   done
-  $yq -i --output-format=json '.inbounds = [{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}]' "${inbounds_file}"
-  tp_port=$($yq eval '.inbounds[0].port' "${inbounds_file}")
+  if [ -f "${inbounds_file}" ]; then
+    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${inbounds_file}"
+    tp_port=$($yq eval '.inbounds[0].port' "${inbounds_file}")
+  else
+    touch "${parent_dir}/confx/base.json"
+    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${parent_dir}/confx/base.json"
+    tp_port=$($yq eval '.inbounds[0].port' "${parent_dir}/confx/base.json")
+  fi
 }
 
 init_dns() {
@@ -54,6 +60,21 @@ init_dns() {
   fi
 }
 
+init_route() {
+  for file in $(find "${parent_dir}/confx" -type f -name "*.json" -not -name "api.json"); do
+    if awk '/"rules"/ {found=1; exit} END {exit !found}' "$file"; then
+      routing_file="${parent_dir}/confx/$(basename "$file")"
+      break
+    fi
+  done
+  if [ -f "${routing_file}" ]; then
+    $yq -i --output-format=json '. = {"routing":{"domainStrategy":"IPIfNonMatch","domainMatcher":"mph","rules":[{"type":"field","port":53,"inboundTag":["trp-in"],"outboundTag":"dns-out"},{"type":"field","outboundTag":"direct","protocol":["bittorrent"]},{"domains":["geosite:category-ads-all"],"outboundTag":"block","type":"field"},{"domains":["geosite:geolocation-!cn"],"outboundTag":"proxy","type":"field"},{"ip":["geoip:cn","geoip:private"],"outboundTag":"direct","type":"field"},{"domains":["geosite:cn","geosite:private"],"outboundTag":"direct","type":"field"},{"port":"0-65535","outboundTag":"proxy","type":"field"}]}}' "${routing_file}"
+  else
+    touch "${parent_dir}/confx/routing.json"
+    $yq -i --output-format=json '. = {"routing":{"domainStrategy":"IPIfNonMatch","domainMatcher":"mph","rules":[{"type":"field","port":53,"inboundTag":["trp-in"],"outboundTag":"dns-out"},{"type":"field","outboundTag":"direct","protocol":["bittorrent"]},{"domains":["geosite:category-ads-all"],"outboundTag":"block","type":"field"},{"domains":["geosite:geolocation-!cn"],"outboundTag":"proxy","type":"field"},{"ip":["geoip:cn","geoip:private"],"outboundTag":"direct","type":"field"},{"domains":["geosite:cn","geosite:private"],"outboundTag":"direct","type":"field"},{"port":"0-65535","outboundTag":"proxy","type":"field"}]}}' "${parent_dir}/confx/routing.json"
+  fi
+}
+
 start_tproxy() {
   if pidof ${bin_xray} >/dev/null 2>&1; then
     log Info "Close existing processes $(pidof ${bin_xray})"
@@ -66,6 +87,7 @@ start_tproxy() {
     init_uids
     init_inbounds
     init_dns
+    init_route
     run_add_trp
     run_disable_quic
     ulimit -SHn 1000000
