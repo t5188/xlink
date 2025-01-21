@@ -24,16 +24,16 @@ init_uids() {
   uids=($(printf "%s\n" "${uids[@]}" | sort -n | uniq))
 }
 
-init_inbounds() {
+init_base() {
   for file in $(find "${parent_dir}/confx" -type f -name "*.json" -not -name "api.json"); do
     if awk '/"inbounds"/ {found=1; exit} END {exit !found}' "$file"; then
-      inbounds_file="${parent_dir}/confx/$(basename "$file")"
+      base_file="${parent_dir}/confx/$(basename "$file")"
       break
     fi
   done
-  if [ -f "${inbounds_file}" ]; then
-    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${inbounds_file}"
-    tp_port=$($yq eval '.inbounds[0].port' "${inbounds_file}")
+  if [ -f "${base_file}" ]; then
+    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
+    tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
   else
     touch "${parent_dir}/confx/base.json"
     $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${parent_dir}/confx/base.json"
@@ -85,7 +85,7 @@ start_tproxy() {
     chown root:net_admin ${bin_xray}
     chmod o+rw ${public_logs_dir}
     init_uids
-    init_inbounds
+    init_base
     init_dns
     init_route
     run_add_trp
