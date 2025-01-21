@@ -68,12 +68,12 @@ stop_tproxy() {
     del_disable_quic
     del_cron
     description "🥴" "stopped"
-    ${scripts_dir}/net.inotify D
     kill -9 $(awk -F ':' 'NR==1 {print $2}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
     find "${parent_dir}" -type f \( -name "*.log" -o -name "*.txt" -o -name "*.list" \) -exec rm -f {} +
   fi
   toast "Xray has stopped."
   log Info "Xray has stopped." >"${parent_dir}/log/run.log"
+  ${scripts_dir}/net.inotify D
 }
 
 add_trp() {
