@@ -35,6 +35,18 @@ init_inbounds() {
   tp_port=$($yq eval '.inbounds[0].port' "${inbounds_file}")
 }
 
+init_dns() {
+  for file in $(find "${parent_dir}/confx" -type f -name "*.json" -not -name "api.json"); do
+    if awk '/"servers"/ {found=1; exit} END {exit !found}' "$file"; then
+      dns_file="${parent_dir}/confx/$(basename "$file")"
+      break
+    fi
+  done
+  $yq -i --output-format=json '.dns = {"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}' "${dns_file}"
+  [[ "${ip6tables}" == "disable" ]] && return
+  $yq -i --output-format=json '.dns = {"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIP"}' "${dns_file}"
+}
+
 start_tproxy() {
   if pidof ${bin_xray} >/dev/null 2>&1; then
     log Info "Close existing processes $(pidof ${bin_xray})"
@@ -46,6 +58,7 @@ start_tproxy() {
     chmod o+rw ${public_logs_dir}
     init_uids
     init_inbounds
+    init_dns
     run_add_trp
     run_disable_quic
     ulimit -SHn 1000000
