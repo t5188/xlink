@@ -31,14 +31,12 @@ init_base() {
       break
     fi
   done
-  if [ -f "${base_file}" ]; then
-    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
-    tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
-  else
-    touch "${parent_dir}/confx/base.json"
-    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${parent_dir}/confx/base.json"
-    tp_port=$($yq eval '.inbounds[0].port' "${parent_dir}/confx/base.json")
+  if [ -z "${base_file}" ]; then
+    base_file="${parent_dir}/confx/base.json"
+    touch "${base_file}"
   fi
+  $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
+  tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
 }
 
 init_dns() {
@@ -48,16 +46,13 @@ init_dns() {
       break
     fi
   done
-  if [ -f "${dns_file}" ]; then
-    $yq -i --output-format=json '.dns = {"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}' "${dns_file}"
-    [[ "${ip6tables}" == "disable" ]] && return
-    $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${dns_file}"
-  else
-    touch "${parent_dir}/confx/dns.json"
-    $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}}' "${parent_dir}/confx/dns.json"
-    [[ "${ip6tables}" == "disable" ]] && return
-    $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${parent_dir}/confx/dns.json"
+  if [ -z "${dns_file}" ]; then
+    dns_file="${parent_dir}/confx/dns.json"
+    touch "${dns_file}"
   fi
+  $yq -i --output-format=json '.dns = {"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://1.1.1.1:443/dns-query","domains":["geosite:geolocation-!cn"]},{"address":"https+local://223.5.5.5:443/dns-query","domains":["geosite:cn","geosite:geolocation-cn"]},"https+local://223.6.6.6:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}' "${dns_file}"
+  [[ "${ip6tables}" == "disable" ]] && return
+  $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${dns_file}"
 }
 
 init_route() {
@@ -67,12 +62,11 @@ init_route() {
       break
     fi
   done
-  if [ -f "${routing_file}" ]; then
-    $yq -i --output-format=json '. = {"routing":{"domainStrategy":"IPIfNonMatch","domainMatcher":"mph","rules":[{"type":"field","port":53,"inboundTag":["trp-in"],"outboundTag":"dns-out"},{"type":"field","outboundTag":"direct","protocol":["bittorrent"]},{"domains":["geosite:category-ads-all"],"outboundTag":"block","type":"field"},{"domains":["geosite:geolocation-!cn"],"outboundTag":"proxy","type":"field"},{"ip":["geoip:cn","geoip:private"],"outboundTag":"direct","type":"field"},{"domains":["geosite:cn","geosite:private"],"outboundTag":"direct","type":"field"},{"port":"0-65535","outboundTag":"proxy","type":"field"}]}}' "${routing_file}"
-  else
-    touch "${parent_dir}/confx/routing.json"
-    $yq -i --output-format=json '. = {"routing":{"domainStrategy":"IPIfNonMatch","domainMatcher":"mph","rules":[{"type":"field","port":53,"inboundTag":["trp-in"],"outboundTag":"dns-out"},{"type":"field","outboundTag":"direct","protocol":["bittorrent"]},{"domains":["geosite:category-ads-all"],"outboundTag":"block","type":"field"},{"domains":["geosite:geolocation-!cn"],"outboundTag":"proxy","type":"field"},{"ip":["geoip:cn","geoip:private"],"outboundTag":"direct","type":"field"},{"domains":["geosite:cn","geosite:private"],"outboundTag":"direct","type":"field"},{"port":"0-65535","outboundTag":"proxy","type":"field"}]}}' "${parent_dir}/confx/routing.json"
+  if [ -z "${routing_file}" ]; then
+    routing_file="${parent_dir}/confx/routing.json"
+    touch "${routing_file}"
   fi
+  $yq -i --output-format=json '. = {"routing":{"domainStrategy":"IPIfNonMatch","domainMatcher":"mph","rules":[{"type":"field","port":53,"inboundTag":["trp-in"],"outboundTag":"dns-out"},{"type":"field","outboundTag":"direct","protocol":["bittorrent"]},{"domains":["geosite:category-ads-all"],"outboundTag":"block","type":"field"},{"ip":["91.105.192.0/23","91.108.4.0/22","91.108.8.0/21","91.108.16.0/21","91.108.56.0/22","95.161.64.0/20","149.154.160.0/20","185.76.151.0/24","2001:67c:4e8::/48","2001:b28:f23c::/47","2001:b28:f23f::/48","2a0a:f280::/32"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:reddit"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:twitter"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:youtube"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:geolocation-!cn"],"outboundTag":"proxy","type":"field"},{"ip":["geoip:cn","geoip:private"],"outboundTag":"direct","type":"field"},{"domains":["geosite:cn","geosite:private"],"outboundTag":"direct","type":"field"},{"port":"0-65535","outboundTag":"direct","type":"field"}]}}' "${routing_file}"
 }
 
 start_tproxy() {
