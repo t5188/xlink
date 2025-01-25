@@ -25,19 +25,23 @@ init_uids() {
 }
 
 init_base() {
-  [[ "${recommended_cfg}" == "disable" ]] && return
-  for file in $(find "${parent_dir}/confx" -type f -name "*.json" -not -name "api.json"); do
-    if awk '/"inbounds"/ {found=1; exit} END {exit !found}' "$file"; then
-      base_file="${parent_dir}/confx/$(basename "$file")"
-      break
-    fi
-  done
-  if [ -z "${base_file}" ]; then
+  if [[ "${recommended_cfg}" == "disable" ]]; then
+    local c=1
+    for file in $(find "${parent_dir}/confx" -type f -name "*.json" -not -name "api.json"); do
+      if awk '/"inbounds"/ {found=1; exit} END {exit !found}' "$file"; then
+        base_file="${parent_dir}/confx/$(basename "$file")"
+        tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
+        local c=0
+        break
+      fi
+    done
+  [[ ${c} == 0 ]] || { toast "⚠️check inbounds"; exit 1; }
+  elif [[ "${recommended_cfg}" == "enable" ]]; then
     base_file="${parent_dir}/confx/base.json"
+    truncate -s 0 "${base_file}"
+    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
+    tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
   fi
-  truncate -s 0 "${base_file}"
-  $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
-  tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
 }
 
 init_dns() {
@@ -81,10 +85,10 @@ start_tproxy() {
     chmod +x ${bin_xray}
     chown root:net_admin ${bin_xray}
     chmod o+rw ${public_logs_dir}
-    init_uids
     init_base
     init_dns
     init_route
+    init_uids
     run_add_trp
     run_disable_quic
     ulimit -SHn 1000000
