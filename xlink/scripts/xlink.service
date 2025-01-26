@@ -35,7 +35,10 @@ init_base() {
         break
       fi
     done
-  [[ ${c} == 0 ]] || { toast "⚠️check inbounds"; exit 1; }
+    [[ ${c} == 0 ]] || {
+      toast "⚠️check inbounds"
+      exit 1
+    }
   elif [[ "${recommended_cfg}" == "enable" ]]; then
     base_file="${parent_dir}/confx/base.json"
     truncate -s 0 "${base_file}"
