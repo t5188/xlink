@@ -56,6 +56,7 @@ init_base() {
     $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"debug","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
     tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
   fi
+  $yq -i --output-format=json ".log.loglevel = \"${xray_log}\"" "${base_file}"
 }
 
 init_dns() {
