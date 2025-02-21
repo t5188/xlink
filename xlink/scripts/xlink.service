@@ -10,15 +10,15 @@ source ${scripts_dir}/settings.ini
 init_uids() {
   uid=""
   uids=()
-  if [ -f "${scripts_dir}/uids.list" ]; then
-    rm "${scripts_dir}/uids.list"
+  if [ -f "${parent_dir}/log/uids.list" ]; then
+    rm "${parent_dir}/log/uids.list"
   fi
   
   for package_name in "${package_list[@]}"; do
     uid=$(awk -v package="${package_name}" '$1 == package {print $2}' /data/system/packages.list)
     if [ -n "${uid}" ]; then
       uids+=("${uid}")
-      echo "${package_name}: ${uid}" >>"${scripts_dir}/uids.list"
+      echo "${package_name}: ${uid}" >>"${parent_dir}/log/uids.list"
     fi
   done
   
@@ -27,11 +27,11 @@ init_uids() {
     if [ -n "${uid}" ]; then
       uid="999$uid"
       uids+=("${uid}")
-      echo "${package_name}: ${uid}" >>"${scripts_dir}/uids.list"
+      echo "${package_name}: ${uid}" >>"${parent_dir}/log/uids.list"
     fi
   done
   
-  sort -t ':' -k2 -n "${scripts_dir}/uids.list" -o "${scripts_dir}/uids.list"
+  sort -t ':' -k2 -n "${parent_dir}/log/uids.list" -o "${parent_dir}/log/uids.list"
   uids=($(printf "%s\n" "${uids[@]}" | sort -n | uniq))
 }
 
@@ -112,7 +112,7 @@ start_tproxy() {
     log Error "Binary ${bin_xray} not found"
     exit 1
   fi
-  echo "${bin_xray##*/}:$(pidof ${bin_xray})" >${scripts_dir}/pid.txt
+  echo "${bin_xray##*/}:$(pidof ${bin_xray})" >${parent_dir}/log/pid.txt
   log Info "Create a new process $(pidof ${bin_xray})"
   add_cron
   toast "Xray is running."
@@ -120,12 +120,12 @@ start_tproxy() {
 }
 
 stop_tproxy() {
-  if [ -f "${scripts_dir}/pid.txt" ]; then
+  if [ -f "${parent_dir}/log/pid.txt" ]; then
     run_del_trp >/dev/null 2>&1
     del_disable_quic
     del_cron
     description "🥴" "stopped"
-    kill -9 $(awk -F ':' 'NR==1 {print $2}' ${scripts_dir}/pid.txt) >/dev/null 2>&1
+    kill -9 $(awk -F ':' 'NR==1 {print $2}' ${parent_dir}/log/pid.txt) >/dev/null 2>&1
     find "${parent_dir}" -type f \( -name "*.log" -o -name "*.txt" -o -name "*.list" \) -exec rm -f {} +
   fi
   toast "Xray has stopped."
