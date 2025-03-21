@@ -70,7 +70,7 @@ init_dns() {
     dns_file="${parent_dir}/confx/dns.json"
   fi
   truncate -s 0 "${dns_file}"
-  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":["https+local://dns.acstudycn.eu.org/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}}' "${dns_file}"
+  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://dns.acstudycn.eu.org/dns-query","domains":["geosite:geolocation-!cn"]},"https+local://223.5.5.5:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}}' "${dns_file}"
   [[ "${ip6tables}" == "disable" ]] && return
   $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${dns_file}"
 }
@@ -87,7 +87,7 @@ init_route() {
     routing_file="${parent_dir}/confx/routing.json"
   fi
   truncate -s 0 "${routing_file}"
-  $yq -i --output-format=json '. = {"routing":{"domainStrategy":"IPIfNonMatch","domainMatcher":"mph","rules":[{"type":"field","port":53,"inboundTag":["trp-in"],"outboundTag":"dns-out"},{"type":"field","outboundTag":"direct","protocol":["bittorrent"]},{"domains":["geosite:category-ads-all"],"outboundTag":"block","type":"field"},{"domains":["dns.acstudycn.eu.org"],"outboundTag":"direct","type":"field"},{"ip":["91.105.192.0/23","91.108.4.0/22","91.108.8.0/21","91.108.16.0/21","91.108.56.0/22","95.161.64.0/20","149.154.160.0/20","185.76.151.0/24","2001:67c:4e8::/48","2001:b28:f23c::/47","2001:b28:f23f::/48","2a0a:f280::/32"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:reddit"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:twitter"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:youtube"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:geolocation-!cn"],"outboundTag":"proxy","type":"field"},{"ip":["geoip:cn","geoip:private"],"outboundTag":"direct","type":"field"},{"domains":["geosite:cn","geosite:private"],"outboundTag":"direct","type":"field"},{"port":"0-65535","outboundTag":"proxy","type":"field"}]}}' "${routing_file}"
+  $yq -i --output-format=json '. = {"routing":{"domainStrategy":"IPIfNonMatch","domainMatcher":"mph","rules":[{"type":"field","port":53,"inboundTag":["trp-in"],"outboundTag":"dns-out"},{"type":"field","outboundTag":"direct","protocol":["bittorrent"]},{"domains":["geosite:category-ads-all"],"outboundTag":"block","type":"field"},{"ip":["91.105.192.0/23","91.108.4.0/22","91.108.8.0/21","91.108.16.0/21","91.108.56.0/22","95.161.64.0/20","149.154.160.0/20","185.76.151.0/24","2001:67c:4e8::/48","2001:b28:f23c::/47","2001:b28:f23f::/48","2a0a:f280::/32"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:reddit"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:twitter"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:youtube"],"outboundTag":"proxy","type":"field"},{"domains":["geosite:geolocation-!cn"],"outboundTag":"proxy","type":"field"},{"ip":["geoip:cn","geoip:private"],"outboundTag":"direct","type":"field"},{"domains":["geosite:cn","geosite:private"],"outboundTag":"direct","type":"field"},{"port":"0-65535","outboundTag":"proxy","type":"field"}]}}' "${routing_file}"
 }
 
 start_tproxy() {
