@@ -70,7 +70,7 @@ init_dns() {
     dns_file="${parent_dir}/confx/dns.json"
   fi
   truncate -s 0 "${dns_file}"
-  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"address":"https+local://dns.acstudycn.eu.org/dns-query","domains":["geosite:geolocation-!cn"]},"https+local://223.5.5.5:443/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}}' "${dns_file}"
+  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":["https+local://dns.acstudycn.eu.org/dns-query"],"tag":"dns","queryStrategy":"UseIPv4"}}' "${dns_file}"
   [[ "${ip6tables}" == "disable" ]] && return
   $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${dns_file}"
 }
