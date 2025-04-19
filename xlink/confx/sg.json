@@ -2,51 +2,7 @@
   "outbounds": [
     {
       "tag": "proxy",
-      "protocol": "vless",
-      "settings": {
-        "vnext": [
-          {
-            "address": "129.150.50.129",
-            "port": 443,
-            "users": [
-              {
-                "id": "6633814c-5c2a-4189-b226-81caae1fc84f",
-                "encryption": "none"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "xhttp",
-        "xhttpSettings": {
-          "mode": "packet-up",
-          "path": "/picture",
-          "downloadSettings": {
-            "address": "213.35.124.4",
-            "port": 443,
-            "network": "xhttp",
-            "xhttpSettings": {
-              "mode": "packet-up",
-              "path": "/picture"
-            },
-            "security": "reality",
-            "realitySettings": {
-              "fingerprint": "chrome",
-              "serverName": "icloud.cdn-apple.com",
-              "publicKey": "A2IiwgGfkNcVhEs7sDzp5GmDibS5ONrNuzrPwVbxVCs",
-              "shortId": "aaabbb111222"
-            }
-          }
-        },
-        "security": "reality",
-        "realitySettings": {
-          "fingerprint": "chrome",
-          "serverName": "icloud.cdn-apple.com",
-          "publicKey": "A2IiwgGfkNcVhEs7sDzp5GmDibS5ONrNuzrPwVbxVCs",
-          "shortId": "aaabbb111222"
-        }
-      }
+      "protocol": "vless"
     }
   ]
 }
