@@ -1,7 +1,7 @@
 id=xlink
 name=Xlink
 version=v2.5
-versionCode=20250429
+versionCode=20250430
 author=Tony
 description=xray tproxy.
 updateJson=https://github.com/t5188/xlink/raw/main/update.json
