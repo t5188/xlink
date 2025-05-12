@@ -70,7 +70,7 @@ init_dns() {
     dns_file="${parent_dir}/confx/dns.json"
   fi
   truncate -s 0 "${dns_file}"
-  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","domain:dns.google":"8.8.8.8","geosite:category-ads-all":"127.0.0.1"},"servers":[{"domains":["geosite:geolocation-!cn"],"address":"fakedns","skipFallback":true},{"domains":["domain:acstudycn.eu.org"],"address":"https+local://223.5.5.5/dns-query","skipFallback":true},"https+local://dns.acstudycn.eu.org/dns-query"],"queryStrategy":"UseIP"},"fakedns":[{"ipPool":"198.18.0.0/15","poolSize":65535},{"ipPool":"fc00::/18","poolSize":65535}]}' "${dns_file}"
+  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","geosite:category-ads-all":"127.0.0.1"},"servers":[{"domains":["geosite:geolocation-!cn"],"address":"fakedns","skipFallback":true},{"domains":["domain:acstudycn.eu.org"],"address":"https+local://223.5.5.5/dns-query","skipFallback":true},"https+local://dns.acstudycn.eu.org/dns-query"],"queryStrategy":"UseIP"},"fakedns":[{"ipPool":"198.18.0.0/15","poolSize":65535},{"ipPool":"fc00::/18","poolSize":65535}]}' "${dns_file}"
   [[ "${ip6tables}" == "disable" ]] && return
   $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${dns_file}"
 }
