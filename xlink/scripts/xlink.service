@@ -52,7 +52,7 @@ init_base() {
   elif [[ "${recommended_cfg}" == "enable" ]]; then
     base_file="${parent_dir}/confx/base.json"
     truncate -s 0 "${base_file}"
-    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"none","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
+    $yq -i --output-format=json '. = {"log":{"access":"../log/access.log","error":"../log/error.log","loglevel":"none","dnsLog":true,"maskAddress":"half"},"inbounds":[{"listen":"::","port":1536,"protocol":"dokodemo-door","sniffing":{"enabled":true,"destOverride":["fakedns","http","tls"],"routeOnly":false},"settings":{"network":"tcp,udp","followRedirect":true},"streamSettings":{"sockopt":{"tproxy":"tproxy"}},"tag":"trp-in"}],"outbounds":[{"protocol":"freedom","settings":{"domainStrategy":"UseIP"},"tag":"direct"},{"tag":"block","protocol":"blackhole","settings":{"response":{"type":"http"}}},{"tag":"dns-out","protocol":"dns","settings":{"address":"8.8.8.8"}}]}' "${base_file}"
   fi
   [[ -n "${xray_log}" ]] && $yq -i --output-format=json ".log.loglevel = \"${xray_log}\"" "${base_file}"
   tp_port=$($yq eval '.inbounds[0].port' "${base_file}")
@@ -70,7 +70,7 @@ init_dns() {
     dns_file="${parent_dir}/confx/dns.json"
   fi
   truncate -s 0 "${dns_file}"
-  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","domain:dns.google":"8.8.8.8","geosite:category-ads-all":"127.0.0.1"},"servers":[{"domains":["geosite:geolocation-!cn"],"address":"https://dns.google/dns-query","skipFallback":true},{"domains":["domain:acstudycn.eu.org"],"address":"https+local://223.5.5.5/dns-query","skipFallback":true},"https+local://dns.acstudycn.eu.org/dns-query"],"queryStrategy":"UseIP"}}' "${dns_file}"
+  $yq -i --output-format=json '. = {"dns":{"hosts":{"domain:googleapis.cn":"googleapis.com","domain:dns.google":"8.8.8.8","geosite:category-ads-all":"127.0.0.1"},"servers":[{"domains":["geosite:geolocation-!cn"],"address":"fakedns","skipFallback":true},{"domains":["domain:acstudycn.eu.org"],"address":"https+local://223.5.5.5/dns-query","skipFallback":true},"https+local://dns.acstudycn.eu.org/dns-query"],"queryStrategy":"UseIP"},"fakedns":[{"ipPool":"198.18.0.0/15","poolSize":65535},{"ipPool":"fc00::/18","poolSize":65535}]}' "${dns_file}"
   [[ "${ip6tables}" == "disable" ]] && return
   $yq -i --output-format=json '.dns.queryStrategy = "UseIP"' "${dns_file}"
 }
